@@ -1,0 +1,2 @@
+config BOARD_GMM7550
+	select SOC_LITEX_VEXRISCV

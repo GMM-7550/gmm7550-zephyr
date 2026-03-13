@@ -1,0 +1,118 @@
+/*
+ *
+ */
+
+/dts-v1/;
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+#include <riscv32-litex-vexriscv.dtsi>
+
+/ {
+        model = "GMM-7550/USB3";
+        compatible = "gmm7550,gmm7550_usb3", "litex,vexriscv";
+
+        chosen {
+                zephyr,console = &uart0;
+		zephyr,shell-uart = &uart0;
+                zephyr,sram = &ram0;
+        };
+
+        aliases {
+                led0 = &led0;
+        };
+
+	ctrl0: soc_controller@f0000000 {
+		compatible = "litex,soc-controller";
+                reg = <0xf0000000 0x4>,
+                      <0xf0000004 0x4>,
+                      <0xf0000008 0x4>;
+		reg-names = "reset",
+			    "scratch",
+			    "bus_errors";
+		status = "okay";
+	};
+
+	uart0: serial@f0002800 {
+		compatible = "litex,uart";
+		interrupt-parent = <&intc0>;
+                reg = <0xf0002800 0x4>,
+                      <0xf0002804 0x4>,
+                      <0xf0002808 0x4>,
+                      <0xf000280c 0x4>,
+                      <0xf0002810 0x4>,
+                      <0xf0002814 0x4>,
+                      <0xf0002818 0x4>,
+                      <0xf000281c 0x4>;
+                reg-names = "rxtx",
+                            "txfull",
+                            "rxempty",
+                            "ev_status",
+                            "ev_pending",
+                            "ev_enable",
+                            "txempty",
+                            "rxfull";
+                interrupts = <0 1>;
+		current-speed = <115200>;
+		status = "okay";
+	};
+
+        gpio_out: gpio@f0000800 {
+                compatible = "litex,gpio";
+                gpio-controller;
+                reg = <0xf0000800 0x4>;
+                reg-names = "out";
+                ngpios = <2>;
+                #gpio-cells = <2>;
+                status = "okay";
+        };
+
+        leds {
+                compatible = "gpio-leds";
+                led0: led0 {
+                        gpios = <&gpio_out 0 GPIO_ACTIVE_HIGH>;
+                        label = "Red LED";
+                };
+                led1: led1 {
+                        gpios = <&gpio_out 1 GPIO_ACTIVE_HIGH>;
+                        label = "Green LED";
+                };
+        };
+
+	ram0: memory@40000000 {
+		device_type = "memory";
+		reg = <0x40000000 0x80000>;
+		status = "okay";
+	};
+
+	timer0: timer@f0002000 {
+		compatible = "litex,timer0";
+		interrupt-parent = <&intc0>;
+		interrupts = <1 1>;
+		reg = <0xf0002000 0x4>,
+		      <0xf0002004 0x4>,
+		      <0xf0002008 0x4>,
+		      <0xf000200c 0x4>,
+		      <0xf0002010 0x4>,
+		      <0xf0002014 0x4>,
+		      <0xf0002018 0x4>,
+		      <0xf000201c 0x4>,
+		      <0xf0002020 0x4>,
+		      <0xf0002024 0x4>;
+		reg-names = "load",
+			    "reload",
+			    "en",
+			    "update_value",
+			    "value",
+			    "ev_status",
+			    "ev_pending",
+			    "ev_enable",
+			    "uptime_latch",
+			    "uptime_cycles";
+		status = "okay";
+	};
+};
+
+&cpu0 {
+    clock-frequency = <25000000>;
+};

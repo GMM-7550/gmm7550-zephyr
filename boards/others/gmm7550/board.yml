@@ -1,0 +1,6 @@
+board:
+  name: gmm7550
+  full_name: GMM7550
+  vendor: others
+  socs:
+    - name: litex_vexriscv
