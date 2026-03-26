@@ -1,5 +1,5 @@
 
-blinky := zephyr/samples/basic/blinky
+blinky := zephyr/samples/subsys/shell/shell_module
 board  := gmm7550
 west   := uv run west
 

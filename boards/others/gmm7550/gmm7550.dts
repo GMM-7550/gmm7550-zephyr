@@ -5,6 +5,7 @@
 /dts-v1/;
 
 #include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
 
 #include <riscv32-litex-vexriscv.dtsi>
 
@@ -33,17 +34,17 @@
 		status = "okay";
 	};
 
-	uart0: serial@f0002800 {
+	uart0: serial@f0003000 {
 		compatible = "litex,uart";
 		interrupt-parent = <&intc0>;
-                reg = <0xf0002800 0x4>,
-                      <0xf0002804 0x4>,
-                      <0xf0002808 0x4>,
-                      <0xf000280c 0x4>,
-                      <0xf0002810 0x4>,
-                      <0xf0002814 0x4>,
-                      <0xf0002818 0x4>,
-                      <0xf000281c 0x4>;
+                reg = <0xf0003000 0x4>,
+                      <0xf0003004 0x4>,
+                      <0xf0003008 0x4>,
+                      <0xf000300c 0x4>,
+                      <0xf0003010 0x4>,
+                      <0xf0003014 0x4>,
+                      <0xf0003018 0x4>,
+                      <0xf000301c 0x4>;
                 reg-names = "rxtx",
                             "txfull",
                             "rxempty",
@@ -79,26 +80,54 @@
                 };
         };
 
+        i2c0: i2c@f0001000 {
+              compatible = "litex,litei2c";
+              interrupt-parent = <&intc0>;
+              interrupts = <2 1>;
+              reg = <0xf0001000 0x4>,
+                    <0xf0001004 0x4>,
+                    <0xf0001008 0x4>,
+                    <0xf000100c 0x4>,
+                    <0xf0001010 0x4>,
+                    <0xf0001014 0x4>,
+                    <0xf0001018 0x4>,
+                    <0xf000101c 0x4>,
+                    <0xf0001020 0x4>;
+              reg-names = "phy_speed_mode",
+                          "master_active",
+                          "master_settings",
+                          "master_addr",
+                          "master_rxtx",
+                          "master_status",
+                          "master_ev_status",
+                          "master_ev_pending",
+                          "master_ev_enable";
+              clock-frequency = <I2C_BITRATE_STANDARD>;
+              #address-cells = <1>;
+              #size-cells = <0>;
+              status = "okay";
+        };
+
 	ram0: memory@40000000 {
 		device_type = "memory";
 		reg = <0x40000000 0x80000>;
 		status = "okay";
 	};
 
-	timer0: timer@f0002000 {
+	timer0: timer@f0002800 {
 		compatible = "litex,timer0";
 		interrupt-parent = <&intc0>;
 		interrupts = <1 1>;
-		reg = <0xf0002000 0x4>,
-		      <0xf0002004 0x4>,
-		      <0xf0002008 0x4>,
-		      <0xf000200c 0x4>,
-		      <0xf0002010 0x4>,
-		      <0xf0002014 0x4>,
-		      <0xf0002018 0x4>,
-		      <0xf000201c 0x4>,
-		      <0xf0002020 0x4>,
-		      <0xf0002024 0x4>;
+		reg = <0xf0002800 0x4>,
+		      <0xf0002804 0x4>,
+		      <0xf0002808 0x4>,
+		      <0xf000280c 0x4>,
+		      <0xf0002810 0x4>,
+		      <0xf0002814 0x4>,
+		      <0xf0002818 0x4>,
+		      <0xf000281c 0x4>,
+		      <0xf0002820 0x4>,
+		      <0xf0002824 0x4>;
 		reg-names = "load",
 			    "reload",
 			    "en",
