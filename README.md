@@ -25,7 +25,7 @@ Fund](https://nlnet.nl/commonsfund), a fund established by
 Commission's [Next Generation Internet](https://ngi.eu) program. Learn
 more at the [NLnet project page](https://nlnet.nl/project/GateMate-USB3-PHY).
 
-<img src="https://nlnet.nl/logo/banner.png" alt="NLnet foundation
-logo" width="20%" />](https://nlnet.nl) [<img
-src="https://nlnet.nl/image/logos/NGI0_tag.svg" alt="NGI Zero Logo"
+[<img src="https://nlnet.nl/logo/banner.png" alt="NLnet foundation
+logo" width="20%" />](https://nlnet.nl)
+[<img src="https://nlnet.nl/image/logos/NGI0_tag.svg" alt="NGI Zero Logo"
 width="20%" />](https://nlnet.nl/commonsfund)
