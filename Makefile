@@ -1,5 +1,5 @@
 
-default:= zephyr/samples/subsys/shell/shell_module
+default:= gmm7550-zephyr/app/usb3_test
 board  := gmm7550
 west   := uv run west
 
