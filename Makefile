@@ -1,12 +1,12 @@
 
-blinky := zephyr/samples/subsys/shell/shell_module
+default:= zephyr/samples/subsys/shell/shell_module
 board  := gmm7550
 west   := uv run west
 
 build_dir ?= build
 top_dir   ?= $(shell $(west) topdir)
 
-app ?= $(top_dir)/$(blinky)
+app    ?= $(top_dir)/$(default)
 
 all: build
 
