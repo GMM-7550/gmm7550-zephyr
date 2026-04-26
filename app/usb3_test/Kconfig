@@ -1,0 +1,24 @@
+# Copyright (c) 2026
+#
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig USB3_TEST_SHELL
+	bool "GMM-7550 USB 3 Adapter board test and debug commands"
+
+if USB3_TEST_SHELL
+
+config USB3_PD
+	bool "USB-C Power Delivery controller"
+
+config USB3_FS
+	bool "Full Speed (12 Mbps) interface (I/O pins)"
+
+config USB3_HS
+	bool "High Speed (480 Mbps) interface (ULPI)"
+
+config USB3_SS
+	bool "Super Speed (5Gbps) interface (SerDes)"
+
+endif
+
+source "Kconfig.zephyr"
