@@ -14,6 +14,10 @@
 
 #define I2C_INST DT_NODELABEL(i2c0)
 #define FUSB303B_ADDRESS 0x21
+#define FUSB303B_PORTROLE 0x03
+#define FUSB303B_CONTROL  0x04
+#define FUSB303B_CONTROL1 0x05
+#define FUSB303B_RESET    0x0a
 
 #ifdef CONFIG_USB3_PD
 static void usb_pd_source_set(bool on)
@@ -50,18 +54,36 @@ static int fusb303b_read_reg(const struct device *dev, const uint8_t reg)
 {
   uint8_t wr_buf = reg;
   uint8_t rd_buf;
-  i2c_write_read(i2c, FUSB303B_ADDRESS,
+  i2c_write_read(dev, FUSB303B_ADDRESS,
                  (void *)&wr_buf, 1, (void *)&rd_buf, 1);
   return rd_buf;
 }
 
-#if 0
 static int fusb303b_write_reg(const struct device *dev,
                               const uint8_t reg, const uint8_t data)
 {
+  uint8_t wr_buf[2];
+  wr_buf[0] = reg;
+  wr_buf[1] = data;
+  i2c_write(dev, (void *)&wr_buf, 2, FUSB303B_ADDRESS);
   return 0;
 }
-#endif
+
+static int usb_pd_enable_handler(const struct shell *sh,
+                                 size_t argc, char **argv)
+{
+  uint8_t reg = fusb303b_read_reg(i2c, FUSB303B_CONTROL1);
+  reg |= 0x08;
+  fusb303b_write_reg(i2c, FUSB303B_CONTROL1, reg);
+  return 0;
+}
+
+static int usb_pd_reset_handler(const struct shell *sh,
+                                size_t argc, char **argv)
+{
+  fusb303b_write_reg(i2c, FUSB303B_RESET, 0x01);
+  return 0;
+}
 
 static int usb_pd_status_handler(const struct shell *sh,
                                  size_t argc, char **argv)
@@ -75,15 +97,15 @@ static int usb_pd_status_handler(const struct shell *sh,
 
   shell_print(sh, "USB PD Status:");
 
-  reg = fusb303b_read_reg(i2c, 0x03);
+  reg = fusb303b_read_reg(i2c, FUSB303B_PORTROLE);
   shell_print(sh, "    Port Role: %02x", reg);
   shell_print(sh, "                     TRY: %d", (reg>>4) & 3);
   shell_print(sh, "                     DRP: %d", (reg>>2) & 1);
   shell_print(sh, "                     SNK: %d", (reg>>1) & 1);
   shell_print(sh, "                     SRC: %d", (reg)    & 1);
 
-  shell_print(sh, "      Control: %02x", fusb303b_read_reg(i2c, 0x04));
-  shell_print(sh, "    Control 1: %02x", fusb303b_read_reg(i2c, 0x05));
+  shell_print(sh, "      Control: %02x", fusb303b_read_reg(i2c, FUSB303B_CONTROL));
+  shell_print(sh, "    Control 1: %02x", fusb303b_read_reg(i2c, FUSB303B_CONTROL1));
   shell_print(sh, "       Manual: %02x", fusb303b_read_reg(i2c, 0x09));
 
   reg = fusb303b_read_reg(i2c, 0x11);
@@ -116,6 +138,12 @@ static int usb_pd_status_handler(const struct shell *sh,
 }
 
 SHELL_STATIC_SUBCMD_SET_CREATE(usb3_pd_cmds,
+                               SHELL_CMD_ARG(reset,
+                                             NULL, "Reset USB PD Controller",
+                                             usb_pd_reset_handler, 1, 0),
+                               SHELL_CMD_ARG(enable,
+                                             NULL, "Enable USB PD Controller",
+                                             usb_pd_enable_handler, 1, 0),
                                SHELL_CMD_ARG(status,
                                              NULL, "USB PD Status",
                                              usb_pd_status_handler, 1, 0),
